@@ -1,13 +1,15 @@
 import os
 
-from .helpers import validate_login
+from helpers import validate_login
 from flask import Flask, flash, redirect, render_template, request, session, jsonify
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def index():
-    return '{"message":"hello"}'
+
+    placeholder = {"message": "hello"}
+    return jsonify(placeholder)
 
 
 
@@ -44,4 +46,3 @@ def potluck_dishes():
 
 if __name__ == "__main__":
     app.run(debug=True)
-

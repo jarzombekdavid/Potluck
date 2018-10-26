@@ -1,18 +1,23 @@
 # helping functions
+import os
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+
+# get environment variables
+DATABASE_URL = os.getenv("DATABASE_URL")
+USERNAME = os.getenv("USERNAME")
+PASSWORD = os.getenv("PASSWORD")
+
+# create database engine
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 def connect_mysql(server='68.183.24.140'):
 
-	username = 'david'
-	password = '41willow'
-
-	engine_config = 'mysql+pymysql://{username}:{password}@{server}/potluck'.format(username=username,
-                                                                            password=password,
+	engine_config = 'mysql+pymysql://{username}:{password}@{server}/potluck'.format(username=USERNAME,
+                                                                            password=PASSWORD,
                                                                             server=server)
 
 	engine = create_engine('mysql://{username}:{password}@{server}/potluck')
@@ -21,8 +26,8 @@ def connect_mysql(server='68.183.24.140'):
 
 
 def sql_create_user(email, password, name):
-	
-	query = '''insert into 
+
+	query = '''insert into
 			   users (full_name, email, `password`)
 			   values ({full_name}, {email_address}, {password});
 			   select LAST_INSERT_ID()'''.format(full_name=name,
@@ -35,21 +40,21 @@ def sql_create_user(email, password, name):
 	return user_id
 
 
-def sql_retrieve_user_info(email): 
+def sql_retrieve_user_data(email):
 
-	query = '''select password, id 
+	query = '''select password, id
 	           from users
 	           where email = ''{}''
 	           '''.format(email)
 
-	results = db.execute(query) 
+	results = db.execute(query)
 	user_data = results.fetchone()
 
 	return user_data
 
 
 def sql_retrieve_profile_data(user_id):
-	
+
 	query = '''
-	
+
 	'''
