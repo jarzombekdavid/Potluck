@@ -1,46 +1,36 @@
-# helping functions
-import sqlalchemy
+from Potluck.sql_functions import sql_retrieve_user_data
+from Potluck.sql_functions import sql_create_user
+from Potluck.sql_functions import sql_retrieve_profile_data
 
 
-def sql_retrieve_user_info(email, password): 
-	pass
+def create_user(email, password, name):
+
+	user_data = {}
+
+	user_id = sql_create_user(email, password, name)
+
+	user_data['user_id'] = 'user_id'
+
+	return user_id
 
 
-def sql_retrieve_potlucks(user_id):
-	pass
+def validate_login(email, password):
+	
+	user_data = sql_retrieve_user_data(email)
+	validation = {}
+
+	#if len(user_data) != 1 or not check_password_hash(user_data[0]["hash"], password):
+	if len(user_data) != 2 or not user_data[0] == password:
+    	validation['status'] = False
+    	validation['user_id'] = -1
+    else:
+    	validation['status'] = True
+    	validation['user_id'] = user_data[1]
+
+    return validation
 
 
-def sql_retrieve_potluck_data(potluck_id):
-	pass
 
+def retrieve_user_profile_data(user_id):
 
-def sql_retrieve_dishes(potluck_id=null, user_id=null)
-	pass
-
-
-def sql_add_potluck(name, date):
-	pass
-
-
-def sql_invite_user(potluck_id, user_id):
-	pass
-
-
-def sql_join_potluck(potluck_id, user_id):
-	pass
-
-
-def sql_accept_dish(potluck_id, dish_name, user_id):
-	pass
-
-
-def sql_add_dish(potluck_id, dish_name, user_id=null):
-	pass
-
-
-def sql_remove_diish(potluck_id, dish_name):
-	pass
-
-
-def sql_delete_potluck(potluck_id):
-	pass
+	data = sql_retrieve_profile_data(user_id)
