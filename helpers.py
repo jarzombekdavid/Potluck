@@ -1,6 +1,6 @@
-from Potluck.sql_functions import sql_retrieve_user_data
-from Potluck.sql_functions import sql_create_user
-from Potluck.sql_functions import sql_retrieve_profile_data
+from .sql_functions import sql_retrieve_user_data
+from .sql_functions import sql_create_user
+from .sql_functions import sql_retrieve_profile_data
 
 
 def create_user(email, password, name):

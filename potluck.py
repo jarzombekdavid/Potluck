@@ -1,6 +1,6 @@
 import os
 
-from Potluck.helpers import validate_login
+from .helpers import validate_login
 from flask import Flask, flash, redirect, render_template, request, session, jsonify
 
 app = Flask(__name__)
@@ -8,6 +8,7 @@ app = Flask(__name__)
 @app.route('/', methods=['GET'])
 def index():
     return '{"message":"hello"}'
+
 
 
 @app.route('/signup', methods=['POST'])
@@ -26,14 +27,15 @@ def user_profile(user_id):
     return 'User Profile Potluck Page'
 
 
+
 @app.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
         validation_data = validate_login(email=request.form.email,
                                          password = request.form.password)
-        
-
         return validation_data
+
+
 
 @app.route('/potluck')
 def potluck_dishes():
