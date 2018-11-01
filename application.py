@@ -43,26 +43,10 @@ def api_create_user():
         password = request.form.get('password')
 
         user_id = db.create_user(email=email,
-                                   name=name,
-                                   password=password)
+                                 name=name,
+                                 password=password)
 
         return jsonify(user_id)
-
-
-
-@app.route('/profile')
-def user_profile(user_id):
-    return 'User Profile Potluck Page'
-
-
-
-@app.route('/login', methods=['POST'])
-def login():
-    if request.method == 'POST':
-        data = validate_login(email=request.form.email,
-                            password = request.form.password)
-        return jsonify(data)
-
 
 
 @app.route('/potlucks', methods=['POST'])

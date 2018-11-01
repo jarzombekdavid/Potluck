@@ -119,13 +119,15 @@ class PotluckDBManager(DBManager):
         query1 = """select potluck_id,
                            potluck_name,
                            potluck_date,
+                           potluck_description,
+                           potluck_location,
                            case when host_user_id = {user_id} then 1
-                           else 0 end as hosted
+                           else 0 end as IsHost
                     from potluck
                     where potluck_id in (select potluck_id
                                          from potluck_users
                                          where user_id = {user_id}
-                                         and rejected <> 1)
+                                         and user_status <> -1)
 
         """.format(user_id=user_id)
 
