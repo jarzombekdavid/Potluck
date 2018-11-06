@@ -1,32 +1,32 @@
 import os
 import pymysql
-from flask import Flask, flash, redirect, render_template, request, session, jsonify
+from flask import flash, redirect, render_template, request, session, jsonify
+from flask_api import FlaskAPI, status, exceptions
 from potluck_db_manager import PotluckDBManager
 
-app = Flask(__name__)
-
+app = FlaskAPI(__name__)
 
 db = PotluckDBManager()
 
 @app.route('/api/login/', methods=['POST'])
 def api_login():
+    """allow login"""
 
     # pull out username and password
     email = request.form.get('email')
     password = request.form.get('password')
 
     result = db.get_user_data(email)
-    user_id = result[0]['user_id']
 
     if len(result) == 0:
-        return jsonify({"user_id": "Invalid Request"})
+        return {"user_id": "Invalid Request"}, status.HTTP_400_BAD_REQUEST
     elif result[0]['password'] == password:
-        return jsonify({"user_id": "{}".format(user_id)})
+        user_id = result[0]['user_id']
+        return {"user_id": user_id}, status.HTTP_200_OK
     else:
-        return jsonify({"user_id": "Invalid Request"})
+        return {"user_id": "Invalid Request"}, status.HTTP_400_BAD_REQUEST
 
-
-@app.route('/', methods=['GET'])
+@app.route('/')
 def index():
 
     placeholder = {"message": "hello"}
@@ -34,10 +34,10 @@ def index():
 
 
 
-@app.route('/api/signup/', methods=['POST'])
-def api_create_user():
-    # add input validation
-    if request.method == 'POST':
+@app.route('/api/register/', methods=["POST"])
+def api_register_user():
+    try:
+        # add input validation
         email = request.form.get('email')
         name = request.form.get('name')
         password = request.form.get('password')
@@ -46,17 +46,20 @@ def api_create_user():
                                  name=name,
                                  password=password)
 
-        return jsonify(user_id)
+        return {'user_id': user_id}, status.HTTP_201_CREATED
+    except:
+        return {'user_id': 'Invalid Request'}, status.HTTP_400_BAD_REQUEST
 
 
-@app.route('/potlucks', methods=['POST'])
-def potlucks():
+@app.route('/api/potlucks/<int:user_id>/', methods=['GET', 'POST', 'DELETE'])
+def potlucks(user_id):
     '''Returns all potlucks for a given user
     '''
-    if request.method == 'POST':
-        data = db.get_user_potlucks(user_id=request.form['user_id'])
-        return jsonify(data)
-
+    if request.method == 'GET':
+        data = db.get_user_potlucks(
+            user_id=user_id
+        )
+        return data, status.HTTP_200_OK
 
 if __name__ == "__main__":
     app.run(debug=True)
