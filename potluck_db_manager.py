@@ -127,7 +127,7 @@ class PotluckDBManager(DBManager):
                     where potluck_id in (select potluck_id
                                          from potluck_users
                                          where user_id = {user_id}
-                                         and user_status <> -1)
+                                         and user_status_id <> -1)
 
         """.format(user_id=user_id)
 
@@ -136,24 +136,14 @@ class PotluckDBManager(DBManager):
 
         return data
 
-    def get_user_dishes(self, user_id):
+    def get_potluck_dishes(self, potluck_id):
         """Get profile data for given user id
 
             Includes potluck information about potlucks they are a part of
             or have been to
         """
-        #TO DO this is not right
-        query1 = """select potluck_id,
-                           potluck_name,
-                           potluck_date,
-                           case when host_user_id = {user_id} then 1
-                           else 0 end as hosted
-                    from potluck
-                    where potluck_id in (select potluck_id
-                                         from potluck_users
-                                         where user_id = {user_id}
-                                         and rejected <> 1)
-
+        #TO DO make this query
+        query1 = """
         """.format(user_id=user_id)
 
         data=self.execute(query1)
@@ -176,8 +166,8 @@ class PotluckDBManager(DBManager):
 
         potluck_id = self.get_last_id()
 
-        query2 = """insert into potluck.potluck_users (potluck_id, user_id, invited, rejected, accepted)
-                    values ({potluck_id}, {user_id}, 0, 0, 0)
+        query2 = """insert into potluck.potluck_users (potluck_id, user_id, user_status_id)
+                    values ({potluck_id}, {user_id}, 0)
         """.format(
             potluck_id=potluck_id,
             user_id=user_id
@@ -192,8 +182,8 @@ class PotluckDBManager(DBManager):
     def invite_guest(self, potluck_id, guest_id):
         """Add a guest to a potluck"""
 
-        query = """insert into potluck.potluck_users (potluck_id, user_id, invited, rejected, accepted)
-                   values ({potluck_id}, {guest_id}, 1, 0, 0)
+        query = """insert into potluck.potluck_users (potluck_id, user_id, user_status_id)
+                   values ({potluck_id}, {guest_id}, 1)
         """.format(potluck_id=potluck_id, guest_id=guest_id)
 
         self.execute(query)
